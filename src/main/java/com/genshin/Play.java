@@ -28,7 +28,7 @@ public class Play {
         return result;
     }
 
-    public static HashMap<Integer, Integer> key = new HashMap() {
+    public static Map<Integer, Integer> key = new HashMap() {
         {
             put(48, KeyEvent.VK_Z);
             put(50, KeyEvent.VK_X);

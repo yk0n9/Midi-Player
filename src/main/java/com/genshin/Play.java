@@ -63,8 +63,8 @@ public class Play {
 
         Sequence sequence = MidiSystem.getSequence(new File(file));
         boolean flag = false;
-        List<Map> tracks = new ArrayList<>();
-        List<Map> end_tracks = new ArrayList<>();
+        List<Map> tracks = new ArrayList();
+        List<Map> end_tracks = new ArrayList();
 
         for (Track track : sequence.getTracks()) {
             for (int i = 0, len = track.size(); i < len; i++) {

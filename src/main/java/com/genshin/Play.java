@@ -19,7 +19,7 @@ import java.util.Map;
 
 public class Play {
 
-    public static List find(java.util.List<Map> arr, long time) {
+    public static List find(List<Map> arr, long time) {
         List<Integer> result = new ArrayList();
         for (Map map : arr) {
             if ((int) map.get("time") == time)

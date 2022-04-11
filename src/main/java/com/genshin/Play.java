@@ -127,7 +127,9 @@ public class Play {
             start.put("" + i, find(tracks, i));
         }
 
-        System.out.println("Start");
+        System.out.println("Play will be start in 3 seconds");
+        Thread.sleep(3000);
+
         for (int i = 0; i < max; i++) {
             if (i != 0)
                 for (Integer note : start.get(String.valueOf(i - 1)))
@@ -146,11 +148,9 @@ public class Play {
 
         robot = new Robot();
         JFileChooser jFileChooser = new JFileChooser();
+
         jFileChooser.showOpenDialog(null);
 
-        System.out.println("3秒后开始");
-
-        Thread.sleep(3000);
         Play.init(jFileChooser.getSelectedFile().getAbsolutePath());
     }
 }

@@ -93,9 +93,10 @@ public class Play {
 
                 new_time = midiEvent.getTick();
                 map.put("time", new_time - old_time);
-                old_time = last_time;
+                old_time = new_time;
 
                 map.put("time", (long) map.get("time") + last_time);
+                last_time = (long) map.get("time");
 
                 //command:144  note_on   command:128  note_off
                 if (map.containsKey("command") && ((int) map.get("command") == 144 || (int) map.get("command") == 128)) {
@@ -126,6 +127,7 @@ public class Play {
             start.put("" + i, find(tracks, i));
         }
 
+        System.out.println("Start");
         for (int i = 0; i < max; i++) {
             if (i != 0)
                 for (Integer note : start.get(String.valueOf(i - 1)))

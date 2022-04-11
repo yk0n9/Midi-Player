@@ -122,9 +122,9 @@ public class Play {
             max = Math.max(max, ((int) map.get("time") + 1));
         }
 
-        Map<String, List<Integer>> start = new HashMap();
+        Map<Integer, List<Integer>> start = new HashMap();
         for (int i = 0; i < max; i++) {
-            start.put("" + i, find(tracks, i));
+            start.put(i, find(tracks, i));
         }
 
         System.out.println("Play will be start in 3 seconds");
@@ -132,10 +132,10 @@ public class Play {
 
         for (int i = 0; i < max; i++) {
             if (i != 0)
-                for (Integer note : start.get(String.valueOf(i - 1)))
+                for (Integer note : start.get(i - 1))
                     if (key.containsKey(note))
                         robot.keyRelease(key.get(note));
-            for (Integer note : start.get(String.valueOf(i)))
+            for (Integer note : start.get(i))
                 if (key.containsKey(note))
                     robot.keyPress(key.get(note));
             Thread.sleep(25);

@@ -21,10 +21,9 @@ public class Play {
 
     public static List find(List<Map> arr, long time) {
         List<Integer> result = new ArrayList();
-        for (Map map : arr) {
+        for (Map map : arr)
             if ((int) map.get("time") == time)
                 result.add((int) map.get("data1"));
-        }
         return result;
     }
 
@@ -76,9 +75,8 @@ public class Play {
                     flag = true;
                 }
             }
-            if (flag) {
+            if (flag)
                 break;
-            }
         }
 
         for (Track track : sequence.getTracks()) {
@@ -118,14 +116,12 @@ public class Play {
         }
 
         long max = 0;
-        for (Map map : end_tracks) {
+        for (Map map : end_tracks)
             max = Math.max(max, ((int) map.get("time") + 1));
-        }
 
         Map<Integer, List<Integer>> start = new HashMap();
-        for (int i = 0; i < max; i++) {
+        for (int i = 0; i < max; i++)
             start.put(i, find(tracks, i));
-        }
 
         System.out.println("Play will be start in 3 seconds");
         Thread.sleep(3000);
@@ -141,7 +137,6 @@ public class Play {
             Thread.sleep(25);
         }
     }
-
 
     @SneakyThrows
     public static void main(String[] args) {

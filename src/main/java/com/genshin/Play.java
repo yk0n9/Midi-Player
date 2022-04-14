@@ -79,6 +79,8 @@ public class Play {
                 break;
         }
 
+        speed = 60000000 / skip / 4.8;
+
         for (Track track : sequence.getTracks()) {
             long new_time;
             long old_time = 0;
@@ -87,12 +89,9 @@ public class Play {
                 MidiEvent midiEvent = track.get(j);
                 Map<String, Object> map = JSON.parseObject(JSON.toJSONString(midiEvent.getMessage()));
 
-                speed = 60000000 / skip / 4.8;
-
                 new_time = midiEvent.getTick();
                 map.put("time", new_time - old_time);
                 old_time = new_time;
-
                 map.put("time", (long) map.get("time") + last_time);
                 last_time = (long) map.get("time");
 

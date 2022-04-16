@@ -19,51 +19,46 @@ import java.util.Map;
 
 public class Play {
 
-    public static List find(List<Map> arr, long time) {
-        List<Integer> result = new ArrayList();
-        for (Map map : arr)
-            if ((int) map.get("time") == time)
+    public static List<Integer> find(List<Map<String, Object>> arr, long time) {
+        List<Integer> result = new ArrayList<>();
+        for (Map<String, Object> map : arr)
+            if ((long) map.get("time") == time)
                 result.add((int) map.get("data1"));
         return result;
     }
 
-    public static Map<Integer, Integer> key = new HashMap() {
-        {
-            put(48, KeyEvent.VK_Z);
-            put(50, KeyEvent.VK_X);
-            put(52, KeyEvent.VK_C);
-            put(53, KeyEvent.VK_V);
-            put(55, KeyEvent.VK_B);
-            put(57, KeyEvent.VK_N);
-            put(59, KeyEvent.VK_M);
-            put(60, KeyEvent.VK_A);
-            put(62, KeyEvent.VK_S);
-            put(64, KeyEvent.VK_D);
-            put(65, KeyEvent.VK_F);
-            put(67, KeyEvent.VK_G);
-            put(69, KeyEvent.VK_H);
-            put(71, KeyEvent.VK_J);
-            put(72, KeyEvent.VK_Q);
-            put(74, KeyEvent.VK_W);
-            put(76, KeyEvent.VK_E);
-            put(77, KeyEvent.VK_R);
-            put(79, KeyEvent.VK_T);
-            put(81, KeyEvent.VK_Y);
-            put(83, KeyEvent.VK_U);
-        }
-    };
-
+    public static Map<Integer, Integer> key = new HashMap<>();
     public static Robot robot;
-    static long skip = 0;
-    static double speed = 0;
+    public static double tempo = 0;
 
     @SneakyThrows
     public static void init(String file) {
+        key.put(48, KeyEvent.VK_Z);
+        key.put(50, KeyEvent.VK_X);
+        key.put(52, KeyEvent.VK_C);
+        key.put(53, KeyEvent.VK_V);
+        key.put(55, KeyEvent.VK_B);
+        key.put(57, KeyEvent.VK_N);
+        key.put(59, KeyEvent.VK_M);
+        key.put(60, KeyEvent.VK_A);
+        key.put(62, KeyEvent.VK_S);
+        key.put(64, KeyEvent.VK_D);
+        key.put(65, KeyEvent.VK_F);
+        key.put(67, KeyEvent.VK_G);
+        key.put(69, KeyEvent.VK_H);
+        key.put(71, KeyEvent.VK_J);
+        key.put(72, KeyEvent.VK_Q);
+        key.put(74, KeyEvent.VK_W);
+        key.put(76, KeyEvent.VK_E);
+        key.put(77, KeyEvent.VK_R);
+        key.put(79, KeyEvent.VK_T);
+        key.put(81, KeyEvent.VK_Y);
+        key.put(83, KeyEvent.VK_U);
 
         Sequence sequence = MidiSystem.getSequence(new File(file));
         boolean flag = false;
-        List<Map> tracks = new ArrayList();
-        List<Map> end_tracks = new ArrayList();
+        List<Map<String, Object>> tracks = new ArrayList<>();
+        List<Map<String, Object>> end_tracks = new ArrayList<>();
 
         for (Track track : sequence.getTracks()) {
             for (int i = 0, len = track.size(); i < len; i++) {
@@ -71,7 +66,7 @@ public class Play {
                 Map<String, Object> msg = JSON.parseObject(JSON.toJSONString(midiEvent.getMessage()));
                 byte[] data = midiEvent.getMessage().getMessage();
                 if ((int) msg.get("length") == 6) {
-                    skip = ((data[3] & 0xFF) << 16) | ((data[4] & 0xFF) << 8) | (data[5] & 0xFF);
+                    tempo = ((data[3] & 255) << 16) | ((data[4] & 255) << 8) | (data[5] & 255);
                     flag = true;
                 }
             }
@@ -79,12 +74,12 @@ public class Play {
                 break;
         }
 
-        speed = 60000000 / skip / 4.8;
+        double speed = 60000000 / tempo / 4.8;
 
         for (Track track : sequence.getTracks()) {
-            long new_time;
-            long old_time = 0;
-            long last_time = 0;
+            double new_time;
+            double old_time = 0;
+            double last_time = 0;
             for (int j = 0, lent = track.size(); j < lent; j++) {
                 MidiEvent midiEvent = track.get(j);
                 Map<String, Object> map = JSON.parseObject(JSON.toJSONString(midiEvent.getMessage()));
@@ -92,12 +87,12 @@ public class Play {
                 new_time = midiEvent.getTick();
                 map.put("time", new_time - old_time);
                 old_time = new_time;
-                map.put("time", (long) map.get("time") + last_time);
-                last_time = (long) map.get("time");
+                map.put("time", (double) map.get("time") + last_time);
+                last_time = (double) map.get("time");
 
                 //command:144  note_on   command:128  note_off
                 if (map.containsKey("command") && ((int) map.get("command") == 144 || (int) map.get("command") == 128)) {
-                    map.put("time", Math.round((long) map.get("time") / (long) speed));
+                    map.put("time", Math.round((double) map.get("time") / speed));
                     map.remove("data2");
                     map.remove("channel");
                     map.remove("length");
@@ -115,10 +110,10 @@ public class Play {
         }
 
         long max = 0;
-        for (Map map : end_tracks)
-            max = Math.max(max, ((int) map.get("time") + 1));
+        for (Map<String, Object> map : end_tracks)
+            max = Math.max(max, ((long) map.get("time") + 1));
 
-        Map<Integer, List<Integer>> start = new HashMap();
+        Map<Integer, List<Integer>> start = new HashMap<>();
         for (int i = 0; i < max; i++)
             start.put(i, find(tracks, i));
 

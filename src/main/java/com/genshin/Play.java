@@ -77,9 +77,9 @@ public class Play {
         double speed = 60000000 / tempo / 4.8;
 
         for (Track track : sequence.getTracks()) {
-            double new_time;
-            double old_time = 0;
-            double last_time = 0;
+            long new_time;
+            long old_time = 0;
+            long last_time = 0;
             for (int j = 0, lent = track.size(); j < lent; j++) {
                 MidiEvent midiEvent = track.get(j);
                 Map<String, Object> map = JSON.parseObject(JSON.toJSONString(midiEvent.getMessage()));
@@ -87,12 +87,12 @@ public class Play {
                 new_time = midiEvent.getTick();
                 map.put("time", new_time - old_time);
                 old_time = new_time;
-                map.put("time", (double) map.get("time") + last_time);
-                last_time = (double) map.get("time");
+                map.put("time", (long) map.get("time") + last_time);
+                last_time = (long) map.get("time");
 
                 //command:144  note_on   command:128  note_off
                 if (map.containsKey("command") && ((int) map.get("command") == 144 || (int) map.get("command") == 128)) {
-                    map.put("time", Math.round((double) map.get("time") / speed));
+                    map.put("time", Math.round((long) map.get("time") / speed));
                     map.remove("data2");
                     map.remove("channel");
                     map.remove("length");

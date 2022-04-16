@@ -27,9 +27,9 @@ public class Play {
         return result;
     }
 
-    public static Map<Integer, Integer> key = new HashMap<>();
-    public static Robot robot;
-    public static double tempo = 0;
+    private static final Map<Integer, Integer> key = new HashMap<>();
+    private static Robot robot;
+    private static double tempo = 0;
 
     @SneakyThrows
     public static void init(String file) {

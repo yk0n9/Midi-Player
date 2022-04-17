@@ -17,6 +17,10 @@ import java.util.List;
 import java.util.Map;
 
 
+/**
+ * @author Ykong
+ * @version 1.8.0_281
+ */
 public class Play {
 
     public static List<Integer> find(List<Map<String, Object>> arr, long time) {

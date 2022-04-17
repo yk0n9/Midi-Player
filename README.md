@@ -4,4 +4,4 @@
 
 JAVA version
 
-Sources: https://github.com/Misaka17032/genshin-lyre-auto-play
+Sources: [genshin-lyre-auto-play](https://github.com/Misaka17032/genshin-lyre-auto-play)

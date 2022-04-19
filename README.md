@@ -2,6 +2,6 @@
 
 (Cover python version)
 
-JAVA version
+genshin-lyre-auto-play的JAVA实现版
 
 Sources: [genshin-lyre-auto-play](https://github.com/Misaka17032/genshin-lyre-auto-play)

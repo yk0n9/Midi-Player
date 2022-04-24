@@ -17,7 +17,6 @@ import java.util.List;
 
 /**
  * @author Ykong
- * @version 1.8.0_281
  */
 public class Play {
 
@@ -140,6 +139,7 @@ public class Play {
         robot = new Robot();
         JFileChooser jFileChooser = new JFileChooser();
 
+        jFileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
         jFileChooser.showOpenDialog(null);
 
         System.out.println("Input skip (6 - 2)");

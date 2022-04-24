@@ -7,14 +7,12 @@ import javax.sound.midi.MidiEvent;
 import javax.sound.midi.MidiSystem;
 import javax.sound.midi.Sequence;
 import javax.sound.midi.Track;
-import javax.swing.JFileChooser;
-import java.awt.Robot;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
 
 
 /**
@@ -36,7 +34,7 @@ public class Play {
     private static double tempo = 0;
 
     @SneakyThrows
-    public static void init(String file) {
+    public static void init(String file, double skip) {
         key.put(48, KeyEvent.VK_Z);
         key.put(50, KeyEvent.VK_X);
         key.put(52, KeyEvent.VK_C);
@@ -78,7 +76,7 @@ public class Play {
                 break;
         }
 
-        double speed = 60000000 / tempo / 4.8;
+        double speed = 60000000 / tempo / skip;
 
         for (Track track : sequence.getTracks()) {
             long new_time;
@@ -144,6 +142,9 @@ public class Play {
 
         jFileChooser.showOpenDialog(null);
 
-        Play.init(jFileChooser.getSelectedFile().getAbsolutePath());
+        System.out.println("Input skip (6 - 2)");
+        double skip = new Scanner(System.in).nextDouble();
+
+        Play.init(jFileChooser.getSelectedFile().getAbsolutePath(), skip);
     }
 }

@@ -66,9 +66,9 @@ public class Play {
             long last_time = 0;
             for (int j = 0, lent = track.size(); j < lent; j++) {
                 MidiEvent midiEvent = track.get(j);
+                byte[] data = midiEvent.getMessage().getMessage();
                 Map<String, Object> map = JSON.parseObject(JSON.toJSONString(midiEvent.getMessage()));
 
-                byte[] data = midiEvent.getMessage().getMessage();
                 if ((int) map.get("length") == 6) {
                     System.out.println(Arrays.toString(data));
                     tempo = ((data[3] & 255) << 16) | ((data[4] & 255) << 8) | (data[5] & 255);

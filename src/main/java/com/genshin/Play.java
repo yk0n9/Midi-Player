@@ -30,10 +30,10 @@ public class Play {
 
     private static final Map<Integer, Integer> key = new HashMap<>();
     private static Robot robot;
-    private static double tempo = 0;
+    private static double bpm = 0;
 
     @SneakyThrows
-    public static void init(String file, double skip) {
+    public static void init(String file) {
         key.put(48, KeyEvent.VK_Z);
         key.put(50, KeyEvent.VK_X);
         key.put(52, KeyEvent.VK_C);
@@ -71,7 +71,8 @@ public class Play {
 
                 if ((int) map.get("length") == 6) {
                     System.out.println(Arrays.toString(data));
-                    tempo = ((data[3] & 255) << 16) | ((data[4] & 255) << 8) | (data[5] & 255);
+                    bpm = Math.floor(60000000 / (double) (((data[3] & 255) << 16) | ((data[4] & 255) << 8) | (data[5] & 255)));
+                    System.out.println("bpm = " + bpm);
                 }
 
                 new_time = midiEvent.getTick();
@@ -81,8 +82,9 @@ public class Play {
                 last_time = (long) map.get("time");
 
                 //command:144  note_on   command:128  note_off
+                //  ((tempo + 20) / 25)
                 if (map.containsKey("command") && ((int) map.get("command") == 144 || (int) map.get("command") == 128)) {
-                    map.put("time", Math.round((long) map.get("time") / (60000000 / tempo / skip)));
+                    map.put("time", Math.round((long) map.get("time") / (bpm / ((bpm + 20) / 25))));
                     map.remove("data2");
                     map.remove("channel");
                     map.remove("length");
@@ -127,13 +129,9 @@ public class Play {
 
         robot = new Robot();
         JFileChooser jFileChooser = new JFileChooser();
-
         jFileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
         jFileChooser.showOpenDialog(null);
 
-        System.out.println("Input skip (6 - 2)");
-        double skip = new Scanner(System.in).nextDouble();
-
-        Play.init(jFileChooser.getSelectedFile().getAbsolutePath(), skip);
+        Play.init(jFileChooser.getSelectedFile().getAbsolutePath());
     }
 }

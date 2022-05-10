@@ -1,0 +1,11 @@
+<component name="ArtifactManager">
+  <artifact name="genshin_lyre_midi_player:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/genshin_lyre_midi_player_jar</output-path>
+    <root id="root">
+      <element id="archive" name="genshin_lyre_midi_player.jar">
+        <element id="module-output" name="genshin_lyre_midi_player" />
+      </element>
+      <element id="library" level="project" name="Maven: com.alibaba:fastjson:1.2.80" />
+    </root>
+  </artifact>
+</component>

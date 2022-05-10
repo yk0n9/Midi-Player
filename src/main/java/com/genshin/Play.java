@@ -57,25 +57,8 @@ public class Play {
         key.put(83, KeyEvent.VK_U);
 
         Sequence sequence = MidiSystem.getSequence(new File(file));
-        boolean flag = false;
         List<Map<String, Object>> tracks = new ArrayList<>();
         List<Map<String, Object>> end_tracks = new ArrayList<>();
-
-        for (Track track : sequence.getTracks()) {
-            for (int i = 0, len = track.size(); i < len; i++) {
-                MidiEvent midiEvent = track.get(i);
-                Map<String, Object> msg = JSON.parseObject(JSON.toJSONString(midiEvent.getMessage()));
-                byte[] data = midiEvent.getMessage().getMessage();
-                if ((int) msg.get("length") == 6) {
-                    tempo = ((data[3] & 255) << 16) | ((data[4] & 255) << 8) | (data[5] & 255);
-                    flag = true;
-                }
-            }
-            if (flag)
-                break;
-        }
-
-        double speed = 60000000 / tempo / skip;
 
         for (Track track : sequence.getTracks()) {
             long new_time;
@@ -85,6 +68,12 @@ public class Play {
                 MidiEvent midiEvent = track.get(j);
                 Map<String, Object> map = JSON.parseObject(JSON.toJSONString(midiEvent.getMessage()));
 
+                byte[] data = midiEvent.getMessage().getMessage();
+                if ((int) map.get("length") == 6) {
+                    System.out.println(Arrays.toString(data));
+                    tempo = ((data[3] & 255) << 16) | ((data[4] & 255) << 8) | (data[5] & 255);
+                }
+
                 new_time = midiEvent.getTick();
                 map.put("time", new_time - old_time);
                 old_time = new_time;
@@ -93,7 +82,7 @@ public class Play {
 
                 //command:144  note_on   command:128  note_off
                 if (map.containsKey("command") && ((int) map.get("command") == 144 || (int) map.get("command") == 128)) {
-                    map.put("time", Math.round((long) map.get("time") / speed));
+                    map.put("time", Math.round((long) map.get("time") / (60000000 / tempo / skip)));
                     map.remove("data2");
                     map.remove("channel");
                     map.remove("length");

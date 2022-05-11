@@ -33,7 +33,7 @@ public class Play {
     private static double bpm = 0;
 
     @SneakyThrows
-    public static void init(String file) {
+    public static void init(File file, double skip) {
         key.put(48, KeyEvent.VK_Z);
         key.put(50, KeyEvent.VK_X);
         key.put(52, KeyEvent.VK_C);
@@ -56,7 +56,7 @@ public class Play {
         key.put(81, KeyEvent.VK_Y);
         key.put(83, KeyEvent.VK_U);
 
-        Sequence sequence = MidiSystem.getSequence(new File(file));
+        Sequence sequence = MidiSystem.getSequence(file);
         List<Map<String, Object>> tracks = new ArrayList<>();
         List<Map<String, Object>> end_tracks = new ArrayList<>();
 
@@ -82,9 +82,9 @@ public class Play {
                 last_time = (long) map.get("time");
 
                 //command:144  note_on   command:128  note_off
-                //  ((tempo + 20) / 25)
+                //  ((bpm + 20) / 25)
                 if (map.containsKey("command") && ((int) map.get("command") == 144 || (int) map.get("command") == 128)) {
-                    map.put("time", Math.round((long) map.get("time") / (bpm / ((bpm + 20) / 25))));
+                    map.put("time", Math.round((long) map.get("time") / (bpm / skip)));
                     map.remove("data2");
                     map.remove("channel");
                     map.remove("length");
@@ -127,11 +127,15 @@ public class Play {
     @SneakyThrows
     public static void main(String[] args) {
 
+        UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         robot = new Robot();
         JFileChooser jFileChooser = new JFileChooser();
         jFileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
         jFileChooser.showOpenDialog(null);
 
-        Play.init(jFileChooser.getSelectedFile().getAbsolutePath());
+        System.out.println("Input skip : (Default : 4.8)");
+        double skip = new Scanner(System.in).nextDouble();
+
+        Play.init(jFileChooser.getSelectedFile(), skip);
     }
 }

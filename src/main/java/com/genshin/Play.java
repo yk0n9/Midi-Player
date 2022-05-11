@@ -24,7 +24,8 @@ public class Play {
         List<Integer> result = new ArrayList<>();
         for (Map<String, Object> map : arr)
             if ((long) map.get("time") == time)
-                result.add((int) map.get("data1"));
+                if (key.containsKey((int) map.get("data1")))
+                    result.add((int) map.get("data1"));
         return result;
     }
 
@@ -115,11 +116,10 @@ public class Play {
         for (int i = 0; i < max; i++) {
             if (i != 0)
                 for (Integer note : start.get(i - 1))
-                    if (key.containsKey(note))
-                        robot.keyRelease(key.get(note));
+                    robot.keyRelease(key.get(note));
             for (Integer note : start.get(i))
-                if (key.containsKey(note))
-                    robot.keyPress(key.get(note));
+//                System.out.println(start.get(i));
+                robot.keyPress(key.get(note));
             Thread.sleep(25);
         }
     }

@@ -36,41 +36,44 @@ public class Play {
         Sequence sequence = MidiSystem.getSequence(file);
         List<Map<String, Object>> tracks = new ArrayList<>();
         List<Map<String, Object>> end_tracks = new ArrayList<>();
+        Map<String, Object> msg;
+        MidiEvent midiEvent;
+        byte[] data;
 
         for (Track track : sequence.getTracks()) {
             long new_time;
             long old_time = 0;
             long last_time = 0;
             for (int j = 0, lent = track.size(); j < lent; j++) {
-                MidiEvent midiEvent = track.get(j);
-                byte[] data = midiEvent.getMessage().getMessage();
-                Map<String, Object> map = JSON.parseObject(JSON.toJSONString(midiEvent.getMessage()));
-                if ((int) map.get("length") == 6) {
+                midiEvent = track.get(j);
+                data = midiEvent.getMessage().getMessage();
+                msg = JSON.parseObject(JSON.toJSONString(midiEvent.getMessage()));
+                if ((int) msg.get("length") == 6) {
                     System.out.println(Arrays.toString(data));
                     bpm = Math.floor(60000000 / (double) (((data[3] & 255) << 16) | ((data[4] & 255) << 8) | (data[5] & 255)));
                     System.out.println("bpm = " + bpm);
                 }
 
                 new_time = midiEvent.getTick();
-                map.put("time", new_time - old_time);
+                msg.put("time", new_time - old_time);
                 old_time = new_time;
-                map.put("time", (long) map.get("time") + last_time);
-                last_time = (long) map.get("time");
+                msg.put("time", (long) msg.get("time") + last_time);
+                last_time = (long) msg.get("time");
 
                 //command:144  note_on   command:128  note_off
-                if (map.containsKey("command") && ((int) map.get("command") == 144 || (int) map.get("command") == 128)) {
-                    map.put("time", Math.round((long) map.get("time") / (bpm / skip)));
-                    map.remove("data2");
-                    map.remove("channel");
-                    map.remove("length");
-                    map.remove("message");
-                    map.remove("status");
-                    if ((int) map.get("command") == 144) {
-                        map.remove("command");
-                        tracks.add(map);
+                if (msg.containsKey("command") && ((int) msg.get("command") == 144 || (int) msg.get("command") == 128)) {
+                    msg.put("time", Math.round((long) msg.get("time") / (bpm / skip)));
+                    msg.remove("data2");
+                    msg.remove("channel");
+                    msg.remove("length");
+                    msg.remove("message");
+                    msg.remove("status");
+                    if ((int) msg.get("command") == 144) {
+                        msg.remove("command");
+                        tracks.add(msg);
                     } else {
-                        map.remove("command");
-                        end_tracks.add(map);
+                        msg.remove("command");
+                        end_tracks.add(msg);
                     }
                 }
             }

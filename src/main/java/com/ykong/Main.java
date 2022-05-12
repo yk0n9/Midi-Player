@@ -16,16 +16,18 @@ import java.util.Scanner;
 public class Main {
 
     private static Robot robot;
-    public static Map<Integer, Integer> key = KeyMapper.init();
+    private static final Map<Integer, Integer> key = KeyMapper.init();
 
     @SneakyThrows
     public static void play(String filePath, double speed) {
 
+        Map<String, Object> msg;
+        long delayMillis;
         MidiReader reader = new MidiReader(filePath);
         MidiFileInfo midiFileInfo = reader.getMidiFileInfo();
         for (MidiEvent nextEvent : reader) {
-            Map<String, Object> msg = JSON.parseObject(JSON.toJSONString(nextEvent));
-            long delayMillis = (long) (nextEvent.getDeltaTime() * midiFileInfo.getMicrosecondsPerTick() / 1000 / speed);
+            msg = JSON.parseObject(JSON.toJSONString(nextEvent));
+            delayMillis = (long) (nextEvent.getDeltaTime() * midiFileInfo.getMicrosecondsPerTick() / 1000 / speed);
             Thread.sleep(delayMillis);
 
             if (msg.containsValue("NOTE_ON")) {

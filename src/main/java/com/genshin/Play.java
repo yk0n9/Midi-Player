@@ -58,7 +58,6 @@ public class Play {
                 last_time = (long) map.get("time");
 
                 //command:144  note_on   command:128  note_off
-                //  ((bpm + 20) / 25)
                 if (map.containsKey("command") && ((int) map.get("command") == 144 || (int) map.get("command") == 128)) {
                     map.put("time", Math.round((long) map.get("time") / (bpm / skip)));
                     map.remove("data2");
@@ -89,12 +88,10 @@ public class Play {
         Thread.sleep(3000);
 
         for (int i = 0; i < max; i++) {
-            if (i != 0)
-                for (Integer note : start.get(i - 1))
-                    robot.keyRelease(key.get(note));
-            for (Integer note : start.get(i))
-//                System.out.println(start.get(i));
+            for (Integer note : start.get(i)) {
                 robot.keyPress(key.get(note));
+                robot.keyRelease(key.get(note));
+            }
             Thread.sleep(25);
         }
     }

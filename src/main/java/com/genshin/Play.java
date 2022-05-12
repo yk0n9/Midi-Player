@@ -3,10 +3,7 @@ package com.genshin;
 import com.alibaba.fastjson.JSON;
 import lombok.SneakyThrows;
 
-import javax.sound.midi.MidiEvent;
-import javax.sound.midi.MidiSystem;
-import javax.sound.midi.Sequence;
-import javax.sound.midi.Track;
+import javax.sound.midi.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
@@ -69,7 +66,6 @@ public class Play {
                 MidiEvent midiEvent = track.get(j);
                 byte[] data = midiEvent.getMessage().getMessage();
                 Map<String, Object> map = JSON.parseObject(JSON.toJSONString(midiEvent.getMessage()));
-
                 if ((int) map.get("length") == 6) {
                     System.out.println(Arrays.toString(data));
                     bpm = Math.floor(60000000 / (double) (((data[3] & 255) << 16) | ((data[4] & 255) << 8) | (data[5] & 255)));

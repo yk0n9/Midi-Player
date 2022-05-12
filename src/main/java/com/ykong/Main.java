@@ -29,13 +29,9 @@ public class Main {
             delayMillis = (long) (nextEvent.getDeltaTime() * midiFileInfo.getMicrosecondsPerTick() / 1000 / speed);
             Thread.sleep(delayMillis);
 
-            if (nextEvent instanceof NoteMidiEvent) {
-                if (((NoteMidiEvent) nextEvent).getNoteEventType() == NOTE_ON) {
-                    if (key.containsKey(((NoteMidiEvent) nextEvent).getNoteNumber())) {
-                        robot.keyPress(key.get(((NoteMidiEvent) nextEvent).getNoteNumber()));
-                        robot.keyRelease(key.get(((NoteMidiEvent) nextEvent).getNoteNumber()));
-                    }
-                }
+            if (nextEvent instanceof NoteMidiEvent && ((NoteMidiEvent) nextEvent).getNoteEventType().equals(NOTE_ON) && key.containsKey(((NoteMidiEvent) nextEvent).getNoteNumber())) {
+                robot.keyPress(key.get(((NoteMidiEvent) nextEvent).getNoteNumber()));
+                robot.keyRelease(key.get(((NoteMidiEvent) nextEvent).getNoteNumber()));
             }
         }
         reader.close();

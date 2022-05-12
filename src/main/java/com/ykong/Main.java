@@ -1,17 +1,18 @@
 package com.ykong;
 
-import com.alibaba.fastjson.JSON;
 import com.util.KeyMapper;
 import lombok.SneakyThrows;
 import midireader.MidiFileInfo;
 import midireader.MidiReader;
 import midireader.midievent.MidiEvent;
+import midireader.midievent.NoteMidiEvent;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.Map;
 import java.util.Scanner;
 
+import static midireader.midievent.NoteMidiEvent.NoteEventType.NOTE_ON;
 
 public class Main {
 
@@ -21,19 +22,19 @@ public class Main {
     @SneakyThrows
     public static void play(String filePath, double speed) {
 
-        Map<String, Object> msg;
         long delayMillis;
         MidiReader reader = new MidiReader(filePath);
         MidiFileInfo midiFileInfo = reader.getMidiFileInfo();
         for (MidiEvent nextEvent : reader) {
-            msg = JSON.parseObject(JSON.toJSONString(nextEvent));
             delayMillis = (long) (nextEvent.getDeltaTime() * midiFileInfo.getMicrosecondsPerTick() / 1000 / speed);
             Thread.sleep(delayMillis);
 
-            if (msg.containsValue("NOTE_ON")) {
-                if (key.containsKey((int) msg.get("noteNumber"))) {
-                    robot.keyPress(key.get((int) msg.get("noteNumber")));
-                    robot.keyRelease(key.get((int) msg.get("noteNumber")));
+            if (nextEvent instanceof NoteMidiEvent) {
+                if (((NoteMidiEvent) nextEvent).getNoteEventType() == NOTE_ON) {
+                    if (key.containsKey(((NoteMidiEvent) nextEvent).getNoteNumber())) {
+                        robot.keyPress(key.get(((NoteMidiEvent) nextEvent).getNoteNumber()));
+                        robot.keyRelease(key.get(((NoteMidiEvent) nextEvent).getNoteNumber()));
+                    }
                 }
             }
         }

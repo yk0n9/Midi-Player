@@ -14,6 +14,9 @@ import java.util.Scanner;
 
 import static midireader.midievent.NoteMidiEvent.NoteEventType.NOTE_ON;
 
+/**
+ * @author Ykong
+ */
 public class Main {
 
     private static Robot robot;

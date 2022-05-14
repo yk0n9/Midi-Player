@@ -4,6 +4,8 @@
 
 请使用com.ykong包下的版本
 
+download install jdk 1.8
+
 1. Reload All Maven Projects
 
 2. Build Project - Run com.ykong.Main.main()

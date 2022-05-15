@@ -32,7 +32,7 @@ public class Main {
             delayMillis = (long) (nextEvent.getDeltaTime() * midiFileInfo.getMicrosecondsPerTick() / 1000 / speed);
             Thread.sleep(delayMillis);
 
-            if (nextEvent instanceof NoteMidiEvent && ((NoteMidiEvent) nextEvent).getNoteEventType().equals(NOTE_ON) && key.containsKey(((NoteMidiEvent) nextEvent).getNoteNumber())) {
+            if (nextEvent instanceof NoteMidiEvent && ((NoteMidiEvent) nextEvent).getNoteEventType() == NOTE_ON && key.containsKey(((NoteMidiEvent) nextEvent).getNoteNumber())) {
                 robot.keyPress(key.get(((NoteMidiEvent) nextEvent).getNoteNumber()));
                 robot.keyRelease(key.get(((NoteMidiEvent) nextEvent).getNoteNumber()));
             }
@@ -50,7 +50,7 @@ public class Main {
         jFileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
         jFileChooser.showOpenDialog(null);
 
-        System.out.println("Input play speed *(multiple):");
+        System.out.println("Input play speed x (1.0):");
         double speed = new Scanner(System.in).nextDouble();
 
         System.out.println("Play will be start in 3 seconds");

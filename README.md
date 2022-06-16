@@ -1,4 +1,4 @@
-# Genshin_Lyre_Midi_Auto_Player
+# Genshin_Lyre_Midi_Player
 
 ~~[genshin-lyre-auto-play](https://github.com/Misaka17032/genshin-lyre-auto-play)的Java实现版~~
 

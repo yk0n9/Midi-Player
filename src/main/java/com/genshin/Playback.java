@@ -7,8 +7,7 @@ import javax.sound.midi.*;
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
 
 import static javax.sound.midi.ShortMessage.NOTE_ON;
 
@@ -23,15 +22,13 @@ public class Playback {
         Sequence sequence = MidiSystem.getSequence(new File(path));
         int resolution = sequence.getResolution();
         Track[] tracks = sequence.getTracks();
-        int track_number = tracks.length;
-        Track main_track = tracks[0];
-        Track track;
-        for (int i = 1; i < track_number; i++) {
-            track = tracks[i];
-            for (int j = 0, lent = track.size(); j < lent; j++) {
-                main_track.add(track.get(j));
+        ArrayList<MidiEvent> message = new ArrayList<>();
+        for (Track t : tracks) {
+            for (int i = 0, len = t.size(); i < len; i++) {
+                message.add(t.get(i));
             }
         }
+        message.sort(Comparator.comparing(MidiEvent::getTick));
 
         MidiEvent midiEvent;
         MidiMessage midiMessage;
@@ -39,8 +36,8 @@ public class Playback {
         long skip = 0;
         int tempo;
         byte[] data;
-        for (int i = 0, len = main_track.size(); i < len; i++) {
-            midiEvent = main_track.get(i);
+        for (MidiEvent event : message) {
+            midiEvent = event;
             midiMessage = midiEvent.getMessage();
             if (midiMessage instanceof MetaMessage && ((MetaMessage) midiMessage).getType() == 81) {
                 data = midiMessage.getMessage();

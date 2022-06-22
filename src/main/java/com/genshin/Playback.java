@@ -1,62 +1,83 @@
 package com.genshin;
 
+import com.alibaba.fastjson.JSON;
 import com.util.KeyMapper;
-import lombok.SneakyThrows;
 
 import javax.sound.midi.*;
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
+import java.util.List;
 import java.util.*;
-
-import static javax.sound.midi.ShortMessage.NOTE_ON;
 
 public class Playback {
 
     private static Robot robot;
     private static final Map<Integer, Integer> key = KeyMapper.init();
 
-    @SneakyThrows
-    public static void play(String path, double speed) {
+    public static void play(String path, double speed) throws Exception {
 
         Sequence sequence = MidiSystem.getSequence(new File(path));
         int resolution = sequence.getResolution();
         Track[] tracks = sequence.getTracks();
-        ArrayList<MidiEvent> message = new ArrayList<>();
+        List<MidiEvent> meta_message = new ArrayList<>();
+        List<Map<String, Object>> message = new ArrayList<>();
+        Map<String, Object> map;
+        long tempo = 500000;
+        double time = 0.0;
+        long old_tick = 0;
+
         for (Track t : tracks) {
             for (int i = 0, len = t.size(); i < len; i++) {
-                message.add(t.get(i));
+                meta_message.add(t.get(i));
             }
         }
-        message.sort(Comparator.comparing(MidiEvent::getTick));
+        meta_message.sort(Comparator.comparing(MidiEvent::getTick));
 
-        MidiEvent midiEvent;
-        MidiMessage midiMessage;
-        long time = 0;
-        long skip = 0;
-        int tempo;
-        byte[] data;
-        for (MidiEvent event : message) {
-            midiEvent = event;
-            midiMessage = midiEvent.getMessage();
-            if (midiMessage instanceof MetaMessage && ((MetaMessage) midiMessage).getType() == 81) {
-                data = midiMessage.getMessage();
+        //处理midi序列 Tick to Milliseconds
+        //milliseconds = tempo / 1000 / resolution
+        for (MidiEvent midiEvent : meta_message) {
+
+            map = JSON.parseObject(JSON.toJSONString(midiEvent.getMessage()));
+
+            if (midiEvent.getMessage() instanceof MetaMessage && ((MetaMessage) midiEvent.getMessage()).getType() == 81) {
+                byte[] data = midiEvent.getMessage().getMessage();
                 tempo = (((data[3] & 255) << 16) | ((data[4] & 255) << 8) | (data[5] & 255));
-                skip = tempo / resolution;
-            }
-            if (midiMessage instanceof ShortMessage && (((ShortMessage) midiMessage).getCommand() == NOTE_ON) && key.containsKey(((ShortMessage) midiMessage).getData1())) {
-                robot.keyPress(key.get(((ShortMessage) midiMessage).getData1()));
-                robot.keyRelease(key.get(((ShortMessage) midiMessage).getData1()));
             }
 
-            Thread.sleep((long) ((midiEvent.getTick() - time) * skip / 1000 / speed));
-            time = midiEvent.getTick();
+            if (midiEvent.getTick() > 0) {
+                time = (midiEvent.getTick() - old_tick) * (tempo / 1000.0 / resolution);
+                old_tick = midiEvent.getTick();
+            }
+            map.put("time", time);
+            message.add(map);
+
+        }
+
+        long start_time = System.currentTimeMillis();
+        double input_time = 0;
+        long playback_time;
+        long current_time;
+
+        for (Map<String, Object> msg : message) {
+            input_time += (double) msg.get("time") / speed;
+
+            playback_time = System.currentTimeMillis() - start_time;
+            current_time = (long) (input_time - playback_time);
+
+            if (current_time > 0) {
+                Thread.sleep(current_time);
+            }
+
+            if (msg.containsKey("command") && ((int) msg.get("command") == 144) && key.containsKey((int) msg.get("data1"))) {
+                robot.keyPress(key.get((int) msg.get("data1")));
+                robot.keyRelease(key.get((int) msg.get("data1")));
+            }
         }
 
     }
 
-    @SneakyThrows
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         robot = new Robot();
 
@@ -67,8 +88,10 @@ public class Playback {
         System.out.println("Input play speed x (1.0):");
         double speed = new Scanner(System.in).nextDouble();
 
-        System.out.println("Play will be start in 3 seconds");
-        Thread.sleep(3000);
+        System.out.println("Input sleep time s (s):");
+        long sleep = new Scanner(System.in).nextLong();
+        System.out.println("Play will be start in " + sleep + " seconds");
+        Thread.sleep(sleep * 1000L);
 
         Playback.play(jFileChooser.getSelectedFile().getAbsolutePath(), speed);
     }

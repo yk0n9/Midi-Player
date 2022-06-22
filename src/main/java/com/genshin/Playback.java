@@ -1,10 +1,11 @@
 package com.genshin;
 
 import com.alibaba.fastjson.JSON;
+import com.sun.javafx.application.PlatformImpl;
 import com.util.KeyMapper;
+import javafx.stage.FileChooser;
 
 import javax.sound.midi.*;
-import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 import java.util.List;
@@ -78,22 +79,36 @@ public class Playback {
         }
     }
 
-    public static void main(String[] args) throws Exception {
-        UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        robot = new Robot();
+    public static void main(String[] args) {
 
-        JFileChooser jFileChooser = new JFileChooser();
-        jFileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-        jFileChooser.showOpenDialog(null);
+        PlatformImpl.startup(() -> {
+            FileChooser FileChooser = new FileChooser();
+            File file = FileChooser.showOpenDialog(null);
+            try {
+                robot = new Robot();
+            } catch (AWTException e) {
+                e.printStackTrace();
+            }
 
-        System.out.println("Input play speed x (1.0):");
-        double speed = new Scanner(System.in).nextDouble();
+            System.out.println("Input play speed x (1.0):");
+            double speed = new Scanner(System.in).nextDouble();
 
-        System.out.println("Input sleep time s (s):");
-        long sleep = new Scanner(System.in).nextLong();
-        System.out.println("Play will be start in " + sleep + " seconds");
-        Thread.sleep(sleep * 1000L);
+            System.out.println("Input sleep time s (s):");
+            long sleep = new Scanner(System.in).nextLong();
+            System.out.println("Play will be start in " + sleep + " seconds");
+            try {
+                Thread.sleep(sleep * 1000L);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
 
-        Playback.play(jFileChooser.getSelectedFile().getAbsolutePath(), speed);
+            try {
+                Playback.play(file.getAbsolutePath(), speed);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+
+
     }
 }

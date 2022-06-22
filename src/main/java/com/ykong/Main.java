@@ -43,7 +43,6 @@ public class Main {
     @SneakyThrows
     public static void main(String[] args) {
 
-        UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         robot = new Robot();
 
         JFileChooser jFileChooser = new JFileChooser();
@@ -57,7 +56,6 @@ public class Main {
         Thread.sleep(3000);
 
         Main.play(jFileChooser.getSelectedFile().getAbsolutePath(), speed);
-
 
     }
 }

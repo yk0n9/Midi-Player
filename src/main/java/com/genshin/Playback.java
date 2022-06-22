@@ -27,7 +27,7 @@ public class Playback {
         double time = 0.0;
         long old_tick = 0;
 
-        //合并后进行排序，让它们看起来像全部在一条音轨上
+        //消息按播放顺序返回  就好像它们都在一条轨道上一样。
         for (Track t : tracks) {
             for (int i = 0, len = t.size(); i < len; i++) {
                 meta_message.add(t.get(i));
@@ -35,8 +35,8 @@ public class Playback {
         }
         meta_message.sort(Comparator.comparing(MidiEvent::getTick));
 
-        //处理midi序列 Tick to Milliseconds
-        //milliseconds = tempo / 1000 / resolution
+        //处理midi序列  根据每个序列区间不同的tempo赋予不同的时间差
+        //milliseconds = tempo / 1000 / resolution (Tick to Milliseconds)
         for (MidiEvent midiEvent : meta_message) {
 
             map = JSON.parseObject(JSON.toJSONString(midiEvent.getMessage()));
@@ -55,6 +55,7 @@ public class Playback {
 
         }
 
+        //播放所有序列  消息以正确的计时生成时间
         long start_time = System.currentTimeMillis();
         double input_time = 0;
         long playback_time;

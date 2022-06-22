@@ -27,6 +27,7 @@ public class Playback {
         double time = 0.0;
         long old_tick = 0;
 
+        //合并后进行排序，让它们看起来像全部在一条音轨上
         for (Track t : tracks) {
             for (int i = 0, len = t.size(); i < len; i++) {
                 meta_message.add(t.get(i));
@@ -74,7 +75,6 @@ public class Playback {
                 robot.keyRelease(key.get((int) msg.get("data1")));
             }
         }
-
     }
 
     public static void main(String[] args) throws Exception {

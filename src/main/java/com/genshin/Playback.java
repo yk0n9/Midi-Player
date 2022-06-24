@@ -82,8 +82,8 @@ public class Playback {
     public static void main(String[] args) {
 
         PlatformImpl.startup(() -> {
-            FileChooser FileChooser = new FileChooser();
-            File file = FileChooser.showOpenDialog(null);
+            FileChooser fileChooser = new FileChooser();
+            File file = fileChooser.showOpenDialog(null);
             try {
                 robot = new Robot();
             } catch (AWTException e) {
@@ -106,9 +106,10 @@ public class Playback {
                 Playback.play(file.getAbsolutePath(), speed);
             } catch (Exception e) {
                 e.printStackTrace();
+            } finally {
+                System.exit(0);
             }
         });
-
 
     }
 }

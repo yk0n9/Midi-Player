@@ -58,15 +58,14 @@ public class Playback {
 
         //播放所有序列  消息以正确的计时生成时间
         long start_time = System.currentTimeMillis();
-        double input_time = 0;
-        long playback_time;
-        long current_time;
+        double input_time = 0.0;
 
         for (Map<String, Object> msg : message) {
+
             input_time += (double) msg.get("time") / speed;
 
-            playback_time = System.currentTimeMillis() - start_time;
-            current_time = (long) (input_time - playback_time);
+            long playback_time = System.currentTimeMillis() - start_time;
+            long current_time = (long) (input_time - playback_time);
 
             if (current_time > 0) {
                 Thread.sleep(current_time);
@@ -82,6 +81,8 @@ public class Playback {
     public static void main(String[] args) {
 
         PlatformImpl.startup(() -> {
+
+            Scanner sc = new Scanner(System.in);
             FileChooser fileChooser = new FileChooser();
             File file = fileChooser.showOpenDialog(null);
             try {
@@ -90,11 +91,30 @@ public class Playback {
                 e.printStackTrace();
             }
 
-            System.out.println("Input play speed x (1.0):");
-            double speed = new Scanner(System.in).nextDouble();
+            double speed;
+            while (true) {
+                System.out.println("Input play speed x (1.0):");
+                if (sc.hasNextDouble()) {
+                    speed = sc.nextDouble();
+                    break;
+                } else {
+                    System.out.println("You are not entering numbers!");
+                    sc.nextLine();
+                }
+            }
 
-            System.out.println("Input sleep time s (s):");
-            long sleep = new Scanner(System.in).nextLong();
+            long sleep;
+            while (true) {
+                System.out.println("Input sleep time s (s):");
+                if (sc.hasNextLong()) {
+                    sleep = sc.nextLong();
+                    break;
+                } else {
+                    System.out.println("You are not entering numbers!");
+                    sc.nextLine();
+                }
+            }
+
             System.out.println("Play will be start in " + sleep + " seconds");
             try {
                 Thread.sleep(sleep * 1000L);

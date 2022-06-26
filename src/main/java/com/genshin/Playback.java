@@ -26,7 +26,7 @@ public class Playback {
         Map<String, Object> map;
         long tempo = 500000;
         double time = 0.0;
-        long old_tick = 0;
+        long tick = 0;
 
         //消息按播放顺序返回  就好像它们都在一条轨道上一样。
         for (Track t : tracks) {
@@ -37,7 +37,8 @@ public class Playback {
         meta_message.sort(Comparator.comparing(MidiEvent::getTick));
 
         //处理midi序列  根据每个序列区间不同的tempo赋予不同的时间差
-        //milliseconds = tempo / 1000 / resolution (Tick to Milliseconds)
+        //Tick to Millisecond
+        //milliseconds = tick difference * (tempo / 1000 / resolution)
         for (MidiEvent midiEvent : meta_message) {
 
             map = JSON.parseObject(JSON.toJSONString(midiEvent.getMessage()));
@@ -49,8 +50,8 @@ public class Playback {
             }
 
             if (midiEvent.getTick() > 0) {
-                time = (midiEvent.getTick() - old_tick) * (tempo / 1000.0 / resolution);
-                old_tick = midiEvent.getTick();
+                time = (midiEvent.getTick() - tick) * (tempo / 1000.0 / resolution);
+                tick = midiEvent.getTick();
             }
             map.put("time", time);
             message.add(map);

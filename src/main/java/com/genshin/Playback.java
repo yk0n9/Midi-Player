@@ -25,7 +25,6 @@ public class Playback {
         List<Map<String, Object>> message = new ArrayList<>();
         Map<String, Object> map;
         long tempo = 500000;
-        double time = 0.0;
         long tick = 0;
 
         //消息按播放顺序返回  就好像它们都在一条轨道上一样。
@@ -49,12 +48,12 @@ public class Playback {
                 continue;
             }
 
-            if (midiEvent.getTick() > 0) {
-                time = (midiEvent.getTick() - tick) * (tempo / 1000.0 / resolution);
+            if (midiEvent.getMessage() instanceof ShortMessage) {
+                double time = (midiEvent.getTick() - tick) * (tempo / 1000.0 / resolution);
                 tick = midiEvent.getTick();
+                map.put("time", time);
+                message.add(map);
             }
-            map.put("time", time);
-            message.add(map);
 
         }
 
@@ -73,7 +72,7 @@ public class Playback {
                 Thread.sleep(current_time);
             }
 
-            if (msg.containsKey("command") && ((int) msg.get("command") == 144) && key.containsKey((int) msg.get("data1"))) {
+            if ((int) msg.get("command") == 144 && key.containsKey((int) msg.get("data1"))) {
                 robot.keyPress(key.get((int) msg.get("data1")));
                 robot.keyRelease(key.get((int) msg.get("data1")));
             }

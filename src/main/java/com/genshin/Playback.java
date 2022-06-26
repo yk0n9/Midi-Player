@@ -40,16 +40,17 @@ public class Playback {
         //milliseconds = tick difference * (tempo / 1000 / resolution)
         for (MidiEvent midiEvent : meta_message) {
 
+            double time;
             map = JSON.parseObject(JSON.toJSONString(midiEvent.getMessage()));
 
             if (midiEvent.getMessage() instanceof MetaMessage && ((MetaMessage) midiEvent.getMessage()).getType() == 81) {
-                byte[] data = midiEvent.getMessage().getMessage();
-                tempo = (((data[3] & 255) << 16) | ((data[4] & 255) << 8) | (data[5] & 255));
-                continue;
-            }
 
-            if (midiEvent.getMessage() instanceof ShortMessage) {
-                double time = (midiEvent.getTick() - tick) * (tempo / 1000.0 / resolution);
+                byte[] data = midiEvent.getMessage().getMessage();
+                tempo = (data[3] & 255) << 16 | (data[4] & 255) << 8 | data[5] & 255;
+
+            } else if (midiEvent.getMessage() instanceof ShortMessage) {
+
+                time = (midiEvent.getTick() - tick) * (tempo / 1000.0 / resolution);
                 tick = midiEvent.getTick();
                 map.put("time", time);
                 message.add(map);

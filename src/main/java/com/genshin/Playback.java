@@ -45,6 +45,7 @@ public class Playback {
             if (midiEvent.getMessage() instanceof MetaMessage && ((MetaMessage) midiEvent.getMessage()).getType() == 81) {
                 byte[] data = midiEvent.getMessage().getMessage();
                 tempo = (((data[3] & 255) << 16) | ((data[4] & 255) << 8) | (data[5] & 255));
+                continue;
             }
 
             if (midiEvent.getTick() > 0) {

@@ -27,6 +27,8 @@ public class Playback {
         long tempo = 500000;
         long tick = 0;
 
+        System.out.println("Start processing sequence!");
+
         //消息按播放顺序返回  就好像它们都在一条轨道上一样。
         for (Track t : tracks) {
             for (int i = 0, len = t.size(); i < len; i++) {
@@ -57,6 +59,8 @@ public class Playback {
             }
 
         }
+
+        System.out.println("Start playing!");
 
         //播放所有序列  消息以正确的计时生成时间
         long start_time = System.currentTimeMillis();
@@ -117,9 +121,11 @@ public class Playback {
                 }
             }
 
-            System.out.println("Play will be start in " + sleep + " seconds");
             try {
-                Thread.sleep(sleep * 1000L);
+                for (long i = sleep; i > 0; i--) {
+                    System.out.println("Play will be start in " + i + " seconds");
+                    Thread.sleep(1000L);
+                }
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -129,6 +135,7 @@ public class Playback {
             } catch (Exception e) {
                 e.printStackTrace();
             } finally {
+                System.out.println("End playback!");
                 System.exit(0);
             }
         });

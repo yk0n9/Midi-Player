@@ -8,7 +8,7 @@
 
 完美避免了```数据字节必须在 0..127 范围内```的异常问题
 
-下载并安装 [JDK8](https://www.oracle.com/downloads/javase-software-license-agreement.html#license-lightbox)
+下载并安装 [JDK8](https://www.oracle.com/java/technologies/javase/javase8-archive-downloads.html)
 
 1. 导入Maven工程
 

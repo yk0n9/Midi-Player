@@ -5,6 +5,7 @@
 请使用com.genshin.Playback
 
 使用纯HashMap处理消息 不在原序列上处理
+
 完美避免了```数据字节必须在 0..127 范围内```的异常问题
 
 download install jdk 1.8

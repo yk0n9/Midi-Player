@@ -8,10 +8,10 @@
 
 完美避免了```数据字节必须在 0..127 范围内```的异常问题
 
-download install jdk 1.8
+下载并安装 [JDK8](https://www.oracle.com/downloads/javase-software-license-agreement.html#license-lightbox)
 
-1. Reload All Maven Projects
+1. 导入Maven工程
 
-2. Build Project - Run com.genshin.Playback.main()
+2. 编译项目，运行com.genshin.Playback.main()
 
-or use resources/jar/run.bat
+或者下载根目录的play.jar和run.bat 直接运行run.bat

@@ -14,4 +14,4 @@
 
 或者
 
-下载根目录的play.jar和run.bat到D:/下的任意位置 直接运行run.bat
+下载根目录的play.jar和run.bat到D:\下的任意位置 直接运行run.bat

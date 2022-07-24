@@ -5,7 +5,7 @@
       <element id="directory" name="META-INF">
         <element id="file-copy" path="$PROJECT_DIR$/src/main/java/META-INF/MANIFEST.MF" />
       </element>
-      <element id="module-output" name="新建文件夹" />
+      <element id="module-output" name="Reload" />
       <element id="extracted-dir" path="$PROJECT_DIR$/../../mvn/com/alibaba/fastjson/1.2.80/fastjson-1.2.80.jar" path-in-jar="/" />
     </root>
   </artifact>

@@ -92,6 +92,8 @@ public class Playback {
 
             Scanner sc = new Scanner(System.in);
             FileChooser fileChooser = new FileChooser();
+            fileChooser.getExtensionFilters().addAll(
+                    new FileChooser.ExtensionFilter("Midi Files", "*.mid"));
             File file = fileChooser.showOpenDialog(null);
             try {
                 robot = new Robot();

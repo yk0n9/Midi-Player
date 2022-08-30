@@ -1,4 +1,4 @@
-# Genshin_Lyre_Midi_Player
+# Midi_Player
 
 请使用com.genshin.Playback
 

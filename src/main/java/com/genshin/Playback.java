@@ -50,7 +50,7 @@ public class Playback {
                 byte[] data = midiEvent.getMessage().getMessage();
                 tempo = (data[3] & 255) << 16 | (data[4] & 255) << 8 | data[5] & 255;
 
-            } else if (midiEvent.getMessage() instanceof ShortMessage) {
+            } else if (midiEvent.getMessage() instanceof ShortMessage && ((ShortMessage) midiEvent.getMessage()).getCommand() == 144 && key.containsKey(((ShortMessage) midiEvent.getMessage()).getData1())) {
 
                 time = (midiEvent.getTick() - tick) * (tempo / 1000.0 / resolution);
                 tick = midiEvent.getTick();
@@ -79,10 +79,8 @@ public class Playback {
                 Thread.sleep(current_time);
             }
 
-            if ((int) msg.get("command") == 144 && key.containsKey((int) msg.get("data1"))) {
-                robot.keyPress(key.get((int) msg.get("data1")));
-                robot.keyRelease(key.get((int) msg.get("data1")));
-            }
+            robot.keyPress(key.get((int) msg.get("data1")));
+            robot.keyRelease(key.get((int) msg.get("data1")));
         }
     }
 
